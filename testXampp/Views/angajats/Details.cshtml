@@ -1,0 +1,50 @@
+﻿@model testXampp.angajat
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>angajat</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nume)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nume)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.data_angajarii)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.data_angajarii)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.experienta)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.experienta)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.salar.angajat_id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.salar.angajat_id)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

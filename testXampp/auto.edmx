@@ -1,0 +1,586 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="autoserviceprojectModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="angajat">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nume" Type="varchar" MaxLength="45" />
+          <Property Name="data_angajarii" Type="date" />
+          <Property Name="experienta" Type="int" />
+        </EntityType>
+        <EntityType Name="client">
+          <Key>
+            <PropertyRef Name="username" />
+          </Key>
+          <Property Name="username" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="password" Type="varchar" MaxLength="32" />
+          <Property Name="puncte_bonus" Type="int" />
+          <Property Name="Masina_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="listaoperatiuni">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nume" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="durata" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="masina">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Marca" Type="varchar" MaxLength="45" />
+          <Property Name="Model" Type="varchar" MaxLength="45" />
+          <Property Name="An_Fabricatie" Type="date" />
+          <Property Name="Putere_CP" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'def.autoserviceproject.mesaje' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="mesaje">
+          <Property Name="email" Type="varchar" MaxLength="25" />
+          <Property Name="Mesaj" Type="varchar" MaxLength="200" />
+        </EntityType>-->
+        <EntityType Name="operatiune">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="data_intrare" Type="datetime" Precision="0" />
+          <Property Name="data_iesire" Type="datetime" Precision="0" />
+          <Property Name="pret" Type="int" Nullable="false" />
+          <Property Name="Angajat_id" Type="int" Nullable="false" />
+          <Property Name="listaOperatiuni_id" Type="int" Nullable="false" />
+          <Property Name="client_username" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="piesa">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nume_Furnizor" Type="varchar" MaxLength="45" />
+          <Property Name="nume" Type="varchar" MaxLength="45" />
+          <Property Name="cantitate" Type="int" />
+          <Property Name="pret" Type="int" Nullable="false" />
+          <Property Name="durata_asteptare_comanda" Type="int" Nullable="false" />
+          <Property Name="listaOperatiuni_id" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'def.autoserviceproject.profit' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="profit">
+          <Key>
+            <PropertyRef Name="operatiune_id" />
+          </Key>
+          <Property Name="pret" Type="int" />
+          <Property Name="dataOp" Type="datetime" Precision="0" />
+          <Property Name="operatiune_id" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'def.autoserviceproject.salar' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="salar">
+          <Key>
+            <PropertyRef Name="angajat_id" />
+          </Key>
+          <Property Name="data_op" Type="datetime" Precision="0" />
+          <Property Name="pret" Type="int" />
+          <Property Name="angajat_id" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_angajat">
+          <End Role="angajat" Type="Self.angajat" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="salar" Type="Self.salar" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="angajat">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="salar">
+              <PropertyRef Name="angajat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Client_Masina1">
+          <End Role="masina" Type="Self.masina" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="client" Type="Self.client" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="masina">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="client">
+              <PropertyRef Name="Masina_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Operatiune_Angajat1">
+          <End Role="angajat" Type="Self.angajat" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="operatiune" Type="Self.operatiune" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="angajat">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="operatiune">
+              <PropertyRef Name="Angajat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_operatiune_client">
+          <End Role="client" Type="Self.client" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="operatiune" Type="Self.operatiune" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="client">
+              <PropertyRef Name="username" />
+            </Principal>
+            <Dependent Role="operatiune">
+              <PropertyRef Name="client_username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Operatiune_listaOperatiuni1">
+          <End Role="listaoperatiuni" Type="Self.listaoperatiuni" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="operatiune" Type="Self.operatiune" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="listaoperatiuni">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="operatiune">
+              <PropertyRef Name="listaOperatiuni_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Piesa_listaOperatiuni1">
+          <End Role="listaoperatiuni" Type="Self.listaoperatiuni" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="piesa" Type="Self.piesa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="listaoperatiuni">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="piesa">
+              <PropertyRef Name="listaOperatiuni_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_profit">
+          <End Role="operatiune" Type="Self.operatiune" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="profit" Type="Self.profit" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="operatiune">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="profit">
+              <PropertyRef Name="operatiune_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="autoserviceprojectModelStoreContainer">
+          <EntitySet Name="angajat" EntityType="Self.angajat" Schema="autoserviceproject" store:Type="Tables" />
+          <EntitySet Name="client" EntityType="Self.client" Schema="autoserviceproject" store:Type="Tables" />
+          <EntitySet Name="listaoperatiuni" EntityType="Self.listaoperatiuni" Schema="autoserviceproject" store:Type="Tables" />
+          <EntitySet Name="masina" EntityType="Self.masina" Schema="autoserviceproject" store:Type="Tables" />
+          <EntitySet Name="operatiune" EntityType="Self.operatiune" Schema="autoserviceproject" store:Type="Tables" />
+          <EntitySet Name="piesa" EntityType="Self.piesa" Schema="autoserviceproject" store:Type="Tables" />
+          <EntitySet Name="profit" EntityType="Self.profit" store:Type="Tables" store:Schema="autoserviceproject">
+            <DefiningQuery>SELECT
+`profit`.`pret`, 
+`profit`.`dataOp`, 
+`profit`.`operatiune_id`
+FROM `profit` AS `profit`</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="salar" EntityType="Self.salar" store:Type="Tables" store:Schema="autoserviceproject">
+            <DefiningQuery>SELECT
+`salar`.`data_op`, 
+`salar`.`pret`, 
+`salar`.`angajat_id`
+FROM `salar` AS `salar`</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="fk_angajat" Association="Self.fk_angajat">
+            <End Role="angajat" EntitySet="angajat" />
+            <End Role="salar" EntitySet="salar" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Client_Masina1" Association="Self.fk_Client_Masina1">
+            <End Role="masina" EntitySet="masina" />
+            <End Role="client" EntitySet="client" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Operatiune_Angajat1" Association="Self.fk_Operatiune_Angajat1">
+            <End Role="angajat" EntitySet="angajat" />
+            <End Role="operatiune" EntitySet="operatiune" />
+          </AssociationSet>
+          <AssociationSet Name="fk_operatiune_client" Association="Self.fk_operatiune_client">
+            <End Role="client" EntitySet="client" />
+            <End Role="operatiune" EntitySet="operatiune" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Operatiune_listaOperatiuni1" Association="Self.fk_Operatiune_listaOperatiuni1">
+            <End Role="listaoperatiuni" EntitySet="listaoperatiuni" />
+            <End Role="operatiune" EntitySet="operatiune" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Piesa_listaOperatiuni1" Association="Self.fk_Piesa_listaOperatiuni1">
+            <End Role="listaoperatiuni" EntitySet="listaoperatiuni" />
+            <End Role="piesa" EntitySet="piesa" />
+          </AssociationSet>
+          <AssociationSet Name="fk_profit" Association="Self.fk_profit">
+            <End Role="operatiune" EntitySet="operatiune" />
+            <End Role="profit" EntitySet="profit" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="autoserviceprojectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="angajat">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nume" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="data_angajarii" Type="DateTime" />
+          <Property Name="experienta" Type="Int32" />
+          <NavigationProperty Name="salar" Relationship="Self.fk_angajat" FromRole="angajat" ToRole="salar" />
+          <NavigationProperty Name="operatiunes" Relationship="Self.fk_Operatiune_Angajat1" FromRole="angajat" ToRole="operatiune" />
+        </EntityType>
+        <EntityType Name="client">
+          <Key>
+            <PropertyRef Name="username" />
+          </Key>
+          <Property Name="username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="32" FixedLength="false" Unicode="false" />
+          <Property Name="puncte_bonus" Type="Int32" />
+          <Property Name="Masina_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="masina" Relationship="Self.fk_Client_Masina1" FromRole="client" ToRole="masina" />
+          <NavigationProperty Name="operatiunes" Relationship="Self.fk_operatiune_client" FromRole="client" ToRole="operatiune" />
+        </EntityType>
+        <EntityType Name="listaoperatiuni">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nume" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="durata" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="operatiunes" Relationship="Self.fk_Operatiune_listaOperatiuni1" FromRole="listaoperatiuni" ToRole="operatiune" />
+          <NavigationProperty Name="piesas" Relationship="Self.fk_Piesa_listaOperatiuni1" FromRole="listaoperatiuni" ToRole="piesa" />
+        </EntityType>
+        <EntityType Name="masina">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Marca" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Model" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="An_Fabricatie" Type="DateTime" />
+          <Property Name="Putere_CP" Type="Int32" />
+          <NavigationProperty Name="clients" Relationship="Self.fk_Client_Masina1" FromRole="masina" ToRole="client" />
+        </EntityType>
+        <EntityType Name="operatiune">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="data_intrare" Type="DateTime" />
+          <Property Name="data_iesire" Type="DateTime" />
+          <Property Name="pret" Type="Int32" Nullable="false" />
+          <Property Name="Angajat_id" Type="Int32" Nullable="false" />
+          <Property Name="listaOperatiuni_id" Type="Int32" Nullable="false" />
+          <Property Name="client_username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="angajat" Relationship="Self.fk_Operatiune_Angajat1" FromRole="operatiune" ToRole="angajat" />
+          <NavigationProperty Name="client" Relationship="Self.fk_operatiune_client" FromRole="operatiune" ToRole="client" />
+          <NavigationProperty Name="listaoperatiuni" Relationship="Self.fk_Operatiune_listaOperatiuni1" FromRole="operatiune" ToRole="listaoperatiuni" />
+          <NavigationProperty Name="profit" Relationship="Self.fk_profit" FromRole="operatiune" ToRole="profit" />
+        </EntityType>
+        <EntityType Name="piesa">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nume_Furnizor" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="nume" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="cantitate" Type="Int32" />
+          <Property Name="pret" Type="Int32" Nullable="false" />
+          <Property Name="durata_asteptare_comanda" Type="Int32" Nullable="false" />
+          <Property Name="listaOperatiuni_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="listaoperatiuni" Relationship="Self.fk_Piesa_listaOperatiuni1" FromRole="piesa" ToRole="listaoperatiuni" />
+        </EntityType>
+        <EntityType Name="profit">
+          <Key>
+            <PropertyRef Name="operatiune_id" />
+          </Key>
+          <Property Name="pret" Type="Int32" />
+          <Property Name="dataOp" Type="DateTime" />
+          <Property Name="operatiune_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="operatiune" Relationship="Self.fk_profit" FromRole="profit" ToRole="operatiune" />
+        </EntityType>
+        <EntityType Name="salar">
+          <Key>
+            <PropertyRef Name="angajat_id" />
+          </Key>
+          <Property Name="data_op" Type="DateTime" />
+          <Property Name="pret" Type="Int32" />
+          <Property Name="angajat_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="angajat" Relationship="Self.fk_angajat" FromRole="salar" ToRole="angajat" />
+        </EntityType>
+        <Association Name="fk_angajat">
+          <End Role="angajat" Type="Self.angajat" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="salar" Type="Self.salar" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="angajat">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="salar">
+              <PropertyRef Name="angajat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Operatiune_Angajat1">
+          <End Role="angajat" Type="Self.angajat" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="operatiune" Type="Self.operatiune" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="angajat">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="operatiune">
+              <PropertyRef Name="Angajat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Client_Masina1">
+          <End Role="masina" Type="Self.masina" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="client" Type="Self.client" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="masina">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="client">
+              <PropertyRef Name="Masina_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_operatiune_client">
+          <End Role="client" Type="Self.client" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="operatiune" Type="Self.operatiune" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="client">
+              <PropertyRef Name="username" />
+            </Principal>
+            <Dependent Role="operatiune">
+              <PropertyRef Name="client_username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Operatiune_listaOperatiuni1">
+          <End Role="listaoperatiuni" Type="Self.listaoperatiuni" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="operatiune" Type="Self.operatiune" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="listaoperatiuni">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="operatiune">
+              <PropertyRef Name="listaOperatiuni_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Piesa_listaOperatiuni1">
+          <End Role="listaoperatiuni" Type="Self.listaoperatiuni" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="piesa" Type="Self.piesa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="listaoperatiuni">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="piesa">
+              <PropertyRef Name="listaOperatiuni_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_profit">
+          <End Role="operatiune" Type="Self.operatiune" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="profit" Type="Self.profit" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="operatiune">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="profit">
+              <PropertyRef Name="operatiune_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="autoserviceprojectEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="angajats" EntityType="Self.angajat" />
+          <EntitySet Name="clients" EntityType="Self.client" />
+          <EntitySet Name="listaoperatiunis" EntityType="Self.listaoperatiuni" />
+          <EntitySet Name="masinas" EntityType="Self.masina" />
+          <EntitySet Name="operatiunes" EntityType="Self.operatiune" />
+          <EntitySet Name="piesas" EntityType="Self.piesa" />
+          <EntitySet Name="profits" EntityType="Self.profit" />
+          <EntitySet Name="salars" EntityType="Self.salar" />
+          <AssociationSet Name="fk_angajat" Association="Self.fk_angajat">
+            <End Role="angajat" EntitySet="angajats" />
+            <End Role="salar" EntitySet="salars" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Operatiune_Angajat1" Association="Self.fk_Operatiune_Angajat1">
+            <End Role="angajat" EntitySet="angajats" />
+            <End Role="operatiune" EntitySet="operatiunes" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Client_Masina1" Association="Self.fk_Client_Masina1">
+            <End Role="masina" EntitySet="masinas" />
+            <End Role="client" EntitySet="clients" />
+          </AssociationSet>
+          <AssociationSet Name="fk_operatiune_client" Association="Self.fk_operatiune_client">
+            <End Role="client" EntitySet="clients" />
+            <End Role="operatiune" EntitySet="operatiunes" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Operatiune_listaOperatiuni1" Association="Self.fk_Operatiune_listaOperatiuni1">
+            <End Role="listaoperatiuni" EntitySet="listaoperatiunis" />
+            <End Role="operatiune" EntitySet="operatiunes" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Piesa_listaOperatiuni1" Association="Self.fk_Piesa_listaOperatiuni1">
+            <End Role="listaoperatiuni" EntitySet="listaoperatiunis" />
+            <End Role="piesa" EntitySet="piesas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_profit" Association="Self.fk_profit">
+            <End Role="operatiune" EntitySet="operatiunes" />
+            <End Role="profit" EntitySet="profits" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="autoserviceprojectModelStoreContainer" CdmEntityContainer="autoserviceprojectEntities">
+          <EntitySetMapping Name="angajats">
+            <EntityTypeMapping TypeName="autoserviceprojectModel.angajat">
+              <MappingFragment StoreEntitySet="angajat">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nume" ColumnName="nume" />
+                <ScalarProperty Name="data_angajarii" ColumnName="data_angajarii" />
+                <ScalarProperty Name="experienta" ColumnName="experienta" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="clients">
+            <EntityTypeMapping TypeName="autoserviceprojectModel.client">
+              <MappingFragment StoreEntitySet="client">
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="puncte_bonus" ColumnName="puncte_bonus" />
+                <ScalarProperty Name="Masina_id" ColumnName="Masina_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="listaoperatiunis">
+            <EntityTypeMapping TypeName="autoserviceprojectModel.listaoperatiuni">
+              <MappingFragment StoreEntitySet="listaoperatiuni">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nume" ColumnName="nume" />
+                <ScalarProperty Name="durata" ColumnName="durata" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="masinas">
+            <EntityTypeMapping TypeName="autoserviceprojectModel.masina">
+              <MappingFragment StoreEntitySet="masina">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Marca" ColumnName="Marca" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="An_Fabricatie" ColumnName="An_Fabricatie" />
+                <ScalarProperty Name="Putere_CP" ColumnName="Putere_CP" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="operatiunes">
+            <EntityTypeMapping TypeName="autoserviceprojectModel.operatiune">
+              <MappingFragment StoreEntitySet="operatiune">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="data_intrare" ColumnName="data_intrare" />
+                <ScalarProperty Name="data_iesire" ColumnName="data_iesire" />
+                <ScalarProperty Name="pret" ColumnName="pret" />
+                <ScalarProperty Name="Angajat_id" ColumnName="Angajat_id" />
+                <ScalarProperty Name="listaOperatiuni_id" ColumnName="listaOperatiuni_id" />
+                <ScalarProperty Name="client_username" ColumnName="client_username" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="piesas">
+            <EntityTypeMapping TypeName="autoserviceprojectModel.piesa">
+              <MappingFragment StoreEntitySet="piesa">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="nume_Furnizor" ColumnName="nume_Furnizor" />
+                <ScalarProperty Name="nume" ColumnName="nume" />
+                <ScalarProperty Name="cantitate" ColumnName="cantitate" />
+                <ScalarProperty Name="pret" ColumnName="pret" />
+                <ScalarProperty Name="durata_asteptare_comanda" ColumnName="durata_asteptare_comanda" />
+                <ScalarProperty Name="listaOperatiuni_id" ColumnName="listaOperatiuni_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="profits">
+            <EntityTypeMapping TypeName="autoserviceprojectModel.profit">
+              <MappingFragment StoreEntitySet="profit">
+                <ScalarProperty Name="pret" ColumnName="pret" />
+                <ScalarProperty Name="dataOp" ColumnName="dataOp" />
+                <ScalarProperty Name="operatiune_id" ColumnName="operatiune_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="salars">
+            <EntityTypeMapping TypeName="autoserviceprojectModel.salar">
+              <MappingFragment StoreEntitySet="salar">
+                <ScalarProperty Name="data_op" ColumnName="data_op" />
+                <ScalarProperty Name="pret" ColumnName="pret" />
+                <ScalarProperty Name="angajat_id" ColumnName="angajat_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

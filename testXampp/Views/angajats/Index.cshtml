@@ -1,0 +1,51 @@
+﻿@model IEnumerable<testXampp.angajat>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.nume)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.data_angajarii)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.experienta)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.salar.angajat_id)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.nume)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.data_angajarii)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.experienta)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.salar.angajat_id)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>
